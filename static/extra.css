@@ -1,0 +1,339 @@
+/* =========================================
+   1. BASE & CHALKBOARD STYLES (The Background)
+   ========================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  overflow: hidden;
+  height: 100vh;
+  background-color: #222; /* Dark frame behind the board */
+  color: white;
+}
+
+.main-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* The Green Chalkboard Texture */
+.chalkboard {
+  flex-grow: 1;
+  background-color: #2e5936; /* Deep Green */
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 1px,
+    transparent 1px
+  );
+  background-size: 20px 20px; /* Texture dots */
+  position: relative;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Area */
+.board-header {
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.home-icon {
+  text-decoration: none;
+  font-size: 1.5rem;
+  transition: transform 0.2s;
+}
+.home-icon:hover {
+  transform: scale(1.2);
+}
+
+/* =========================================
+   2. TOOLKIT GRID LAYOUT (New Section)
+   ========================================= */
+.toolkit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Split board 50/50 */
+  gap: 40px;
+  padding: 40px;
+  height: 100%;
+  overflow-y: auto; /* Allow scrolling if content gets tall */
+}
+
+/* The Glass/Chalk Panels */
+.panel {
+  background: rgba(255, 255, 255, 0.05); /* Subtle glass effect */
+  border: 2px dashed rgba(255, 255, 255, 0.3); /* Chalk line border */
+  border-radius: 10px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.panel h3 {
+  color: #ffd700; /* Chalk Yellow */
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  font-family: "Comic Sans MS", cursive; /* Handwritten look */
+}
+
+/* =========================================
+   3. INPUT ZONE UI
+   ========================================= */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 8px 20px;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: all 0.3s;
+}
+
+.tab-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn.active {
+  background: white;
+  color: #2e5936; /* Green text on white btn */
+  border-color: white;
+  font-weight: bold;
+}
+
+.mode-content {
+  display: none;
+}
+.mode-content.active {
+  display: block;
+  animation: fadeIn 0.4s;
+}
+
+.drop-zone {
+  border: 3px dashed rgba(255, 255, 255, 0.4);
+  padding: 40px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.drop-zone:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffd700;
+}
+
+.drop-zone i {
+  margin-bottom: 15px;
+  display: block;
+}
+
+.file-preview,
+.file-list {
+  margin-top: 15px;
+  color: #fff;
+  font-family: "Consolas", monospace;
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/* Action Buttons & Selects */
+.action-area {
+  margin-top: auto;
+  display: flex;
+  gap: 15px;
+  padding-top: 30px;
+}
+
+.chalk-select {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 12px;
+  border-radius: 5px;
+  flex-grow: 1;
+  cursor: pointer;
+}
+.chalk-select option {
+  background: #333;
+  color: white;
+}
+
+.chalk-btn {
+  background: #8b5a2b; /* Wood color */
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  flex-grow: 1;
+  transition: background 0.2s;
+}
+
+.chalk-btn:hover {
+  background: #a06b3a;
+}
+
+/* =========================================
+   4. TIMER & OVERLAY
+   ========================================= */
+.hidden {
+  display: none !important;
+}
+
+#process-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(46, 89, 54, 0.98); /* Opaque green */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  z-index: 20;
+}
+
+.spinner-chalk {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(255, 255, 255, 0.2);
+  border-top: 6px solid #ffd700; /* Yellow spinner */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.timer-display {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  font-family: "Courier New", monospace;
+}
+
+/* =========================================
+   5. OUTPUT ZONE
+   ========================================= */
+.placeholder-text {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 60px;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+.result-card {
+  background: #f4f1ea; /* Sticky note paper color */
+  color: #333;
+  padding: 30px;
+  border-radius: 4px;
+  text-align: center;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+  transform: rotate(1deg);
+  margin-top: 20px;
+}
+
+.result-card .file-icon {
+  color: #e74c3c; /* PDF Red */
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.file-details strong {
+  font-size: 1.2rem;
+  display: block;
+  margin-bottom: 5px;
+}
+.save-btn {
+  background: #27ae60;
+  width: 100%;
+  margin-top: 15px;
+}
+.save-btn:hover {
+  background: #2ecc71;
+}
+
+/* Animations */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading Overlay Styles */
+#loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(46, 89, 54, 0.8); /* Match chalkboard green but darker */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000; /* Above everything else */
+  color: white;
+  font-size: 1.5rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* The Spinner Animation */
+.chalk-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px dashed rgba(255, 255, 255, 0.5);
+  border-top: 5px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

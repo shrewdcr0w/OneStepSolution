@@ -1,0 +1,284 @@
+/* ========================
+   1. RESET & BASE STYLES
+   ======================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* Prevents scrollbars on desktop */
+  background-color: #222;
+}
+
+/* Allow scrolling on mobile if content is too tall */
+@media (max-width: 768px) {
+  body {
+    overflow-y: auto;
+    height: auto;
+  }
+}
+
+/* ========================
+   2. MAIN CHALKBOARD BACKGROUND
+   ======================== */
+.chalkboard {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #2e5936;
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 1px,
+    transparent 1px
+  );
+  background-size: 20px 20px;
+  position: relative;
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================
+   3. HEADER
+   ======================== */
+.board-header {
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.board-header h2 {
+  font-size: clamp(24px, 4vw, 40px); /* Responsive font size */
+}
+
+.chalk-btn {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 25px; /* Pill shape */
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.chalk-btn:hover {
+  background: white;
+  color: #2e5936;
+}
+
+/* ========================
+   4. LAYOUT GRID (Workspace)
+   ======================== */
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 50% left, 50% right */
+  flex-grow: 1;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Mobile Layout: Stack columns */
+@media (max-width: 900px) {
+  .workspace {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow: visible;
+    padding-bottom: 50px;
+  }
+}
+
+/* ========================
+   5. LEFT SIDE: TOOL SHELF
+   ======================== */
+.shelf-section {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.section-title {
+  color: #eaeaea;
+  font-size: 30px;
+  margin-bottom: 40px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.shelf-wall {
+  display: flex;
+  flex-direction: column;
+  gap: 60px; /* Consistent gap between shelves */
+  padding-left: 10px;
+}
+
+/* Shelf Design */
+.shelf {
+  position: relative;
+  height: 18px;
+  background: linear-gradient(180deg, #5c4033, #3e2b22);
+  border-radius: 4px;
+  box-shadow: 0 5px 0 #2a1d17, 0 15px 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end; /* Items sit on bottom */
+  padding: 0 20px;
+}
+
+/* Items sitting on shelf */
+.item {
+  position: relative;
+  bottom: 12px; /* Pull up to sit on shelf */
+  margin-right: 20px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #222;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transform: rotate(0deg);
+  transition: transform 0.2s;
+  white-space: nowrap;
+}
+
+.item:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.link {
+  text-decoration: none;
+  color: #333;
+}
+
+.link:hover {
+  color: #0c6749;
+}
+
+/* Broken Shelf Styling */
+.shelf.broken {
+  transform: rotate(2deg);
+  background: linear-gradient(180deg, #4a332a, #2b1d12);
+}
+
+.shelf.broken .crack {
+  position: absolute;
+  left: 50%;
+  top: -5px;
+  width: 4px;
+  height: 25px;
+  background: #1a110a;
+  transform: rotate(-15deg);
+  box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* ========================
+   6. RIGHT SIDE: TILTED SCREEN
+   ======================== */
+.tilted-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px; /* 3D depth */
+}
+
+.tilted-screen {
+  width: 80%;
+  height: 70vh;
+  background: #1a1a20;
+  border: 4px solid #444;
+  border-radius: 12px;
+  padding: 30px;
+  color: white;
+
+  /* The 3D Tilt */
+  transform: rotateY(-15deg) rotateX(5deg);
+  box-shadow: 25px 25px 50px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(0, 0, 0, 0.8);
+
+  transition: transform 0.5s ease;
+}
+
+/* Mobile: Remove 3D effect for readability */
+@media (max-width: 900px) {
+  .tilted-wrap {
+    padding: 40px 20px;
+    perspective: none;
+  }
+
+  .tilted-screen {
+    width: 100%;
+    height: 300px;
+    transform: none; /* Flatten */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ========================
+   7. STICKY NOTES
+   ======================== */
+#notes-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Allows clicking through empty space */
+  z-index: 10;
+}
+
+.note {
+  width: 200px;
+  height: 180px;
+  background-color: #ffeb3b; /* Classic Post-it yellow */
+  padding: 15px;
+  position: absolute;
+  box-shadow: 5px 10px 15px rgba(0, 0, 0, 0.3);
+  cursor: grab;
+  z-index: 20;
+  pointer-events: auto; /* Re-enable clicks for notes */
+  transform: rotate(-2deg); /* Organic look */
+  font-family: "Comic Neue", "Comic Sans MS", cursive;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.note:hover {
+  transform: rotate(0deg) scale(1.05);
+  box-shadow: 10px 20px 25px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+.note textarea {
+  width: 100%;
+  height: 85%;
+  background: transparent;
+  border: none;
+  resize: none;
+  outline: none;
+  font-size: 1.1rem;
+  font-family: inherit;
+  color: #222;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.delete-btn:hover {
+  color: #d32f2f;
+}

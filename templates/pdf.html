@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chalkboard Toolkit</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='extra.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="main-container">
+      <main class="chalkboard" id="board">
+        <div class="board-header">
+          <h2>🛠️ Conversion Toolkit</h2>
+          <a
+            href="{{ url_for('index') }}"
+            class="home-icon"
+            title="Back to Dashboard"
+            style="text-decoration: none; font-size: 1.5rem"
+            >🏠</a
+          >
+        </div>
+
+        <div id="loading-overlay" class="hidden">
+          <div class="chalk-spinner"></div>
+          <p>
+            Converting PDF to Word... This may take a minute for large files.
+          </p>
+        </div>
+
+        <div class="toolkit-grid">
+          <section class="panel input-panel">
+            <h3><i class="fas fa-file-import"></i> Input Zone</h3>
+
+            <details
+              style="
+                margin-bottom: 20px;
+                color: white;
+                font-family: sans-serif;
+                cursor: pointer;
+                max-width: 400px;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                padding: 10px;
+                border-radius: 8px;
+                background: rgba(0, 0, 0, 0.2);
+              "
+            >
+              <summary
+                style="font-weight: bold; list-style: none; outline: none"
+              >
+                ℹ️ Supported Files (Click to View)
+              </summary>
+
+              <div
+                style="
+                  margin-top: 10px;
+                  font-size: 0.9rem;
+                  line-height: 1.6;
+                  color: #e0e0e0;
+                "
+              >
+                <p>
+                  <strong>✅ TO PDF:</strong><br />
+                  Images (JPG, PNG, WebP, etc.)<br />
+                  Docs (TXT, MD, RTF, HTML, EPUB)<br />
+                  Office (XLS, PPT, ODT - <em>Requires LibreOffice</em>)
+                </p>
+
+                <p>
+                  <strong>🔁 FROM PDF:</strong><br />
+                  PDF → DOCX / TXT (Text only)
+                </p>
+
+                <p
+                  style="
+                    border-top: 1px dashed rgba(255, 255, 255, 0.3);
+                    padding-top: 5px;
+                    color: #ff8a80;
+                  "
+                >
+                  <strong>❌ NOT Supported:</strong> Scanned OCR or Video
+                </p>
+              </div>
+            </details>
+
+            <div class="tabs">
+              <button
+                class="tab-btn active"
+                onclick="switchTab('single', this)"
+              >
+                Single Convert
+              </button>
+              <button class="tab-btn" onclick="switchTab('merge', this)">
+                Merge & Convert
+              </button>
+            </div>
+
+            <div id="single-mode" class="mode-content active">
+              <div class="drop-zone" id="single-drop">
+                <i class="fas fa-cloud-upload-alt fa-3x"></i>
+                <p>click here to browse files (Max 100MB)</p>
+                <input
+                  type="file"
+                  name="file"
+                  accept=".pdf, .jpg, .jpeg, .png, .bmp, .tiff, .gif, .webp, .txt, .docx, .md, .rtf, .html, .htm, .epub, .xls, .xlsx, .ppt, .pptx, .odt, .ods, .odp, .odg, .otg, .fodg, .fods"
+                  id="single-file-input"
+                  hidden
+                />
+              </div>
+              <div class="file-preview" id="single-file-name"></div>
+            </div>
+
+            <div id="merge-mode" class="mode-content">
+              <div class="drop-zone" id="merge-drop">
+                <i class="fas fa-layer-group fa-3x"></i>
+                <p>Select multiple files to merge (Images, Word, PDF)</p>
+                <input
+                  type="file"
+                  name="file"
+                  accept=".pdf, .jpg, .jpeg, .png, .bmp, .tiff, .gif, .webp, .txt, .md, .docx, .doc, .rtf, .html, .htm, .epub, .xls, .xlsx, .ppt, .pptx, .odt"
+                  id="merge-file-input"
+                  multiple
+                  hidden
+                />
+              </div>
+              <div
+                class="file-list"
+                id="merge-file-list"
+                style="margin-top: 10px; font-size: 0.9rem"
+              ></div>
+            </div>
+
+            <div class="action-area">
+              <select id="format-select" class="chalk-select">
+                <option value="pdf">Convert to PDF</option>
+                <option value="docx">Convert PDF to DOCX</option>
+                <option value="txt">Convert PDF to TXT</option>
+              </select>
+              <button id="convert-btn" class="chalk-btn action-btn">
+                Start Process
+              </button>
+            </div>
+
+            <div id="process-overlay" class="hidden">
+              <div class="spinner-chalk"></div>
+              <p>Processing...</p>
+              <div class="timer-display" id="timer">0.0s</div>
+            </div>
+          </section>
+
+          <section class="panel output-panel">
+            <h3><i class="fas fa-check-circle"></i> Finished</h3>
+
+            <div id="output-placeholder" class="placeholder-text">
+              Files will appear here after conversion.
+            </div>
+
+            <div id="result-card" class="result-card hidden">
+              <div class="file-icon"><i class="fas fa-file-pdf"></i></div>
+              <div class="file-details">
+                <strong id="out-filename">document_final.pdf</strong>
+                <br />
+                <span id="out-size">2.4 MB</span>
+              </div>
+              <button id="save-btn" class="chalk-btn save-btn">
+                <i class="fas fa-download"></i> Save to Folder
+              </button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='converter.js') }}"></script>
+  </body>
+</html>

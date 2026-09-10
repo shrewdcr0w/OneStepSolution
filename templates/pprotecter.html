@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chalkboard Toolkit</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='extra.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="main-container">
+      <main class="chalkboard" id="board">
+        <div class="board-header">
+          <h2>🛠️ Password Protector</h2>
+          <a
+            href="{{ url_for('index') }}"
+            class="home-icon"
+            style="text-decoration: none; font-size: 1.5rem"
+            >🏠</a
+          >
+        </div>
+
+        <div id="loading-overlay" class="hidden">
+          <div class="chalk-spinner"></div>
+          <p>Locking your file... Please wait.</p>
+        </div>
+
+        <div class="toolkit-grid">
+          <section class="panel input-panel">
+            <h3><i class="fas fa-file-import"></i> Input Zone</h3>
+
+            <div id="single-mode" class="mode-content active">
+              <div class="drop-zone" id="single-drop" style="cursor: pointer">
+                <i class="fas fa-cloud-upload-alt fa-3x"></i>
+                <p>Click here to browse files</p>
+                <input
+                  type="file"
+                  id="single-file-input"
+                  accept=".pdf, .docx, .xlsx, .pptx"
+                  hidden
+                />
+              </div>
+              <div class="file-preview" id="single-file-name"></div>
+            </div>
+
+            <div
+              class="action-area"
+              style="
+                margin-top: 20px;
+                background: rgba(255, 255, 255, 0.05);
+                padding: 15px;
+                border-radius: 8px;
+              "
+            >
+              <div id="password-section">
+                <label
+                  style="color: #ffeb3b; display: block; margin-bottom: 5px"
+                >
+                  <i class="fas fa-lock"></i> Set Password
+                </label>
+                <input
+                  type="password"
+                  id="file-password"
+                  placeholder="Enter password to encrypt"
+                  style="
+                    width: 100%;
+                    padding: 10px;
+                    border-radius: 4px;
+                    border: 1px solid #444;
+                    background: #222;
+                    color: white;
+                  "
+                />
+              </div>
+              <button
+                id="convert-btn"
+                class="chalk-btn action-btn"
+                style="width: 100%; margin-top: 15px"
+              >
+                Start Process
+              </button>
+            </div>
+          </section>
+
+          <section class="panel output-panel">
+            <h3><i class="fas fa-check-circle"></i> Finished</h3>
+            <div id="output-placeholder" class="placeholder-text">
+              Secure file will appear here.
+            </div>
+            <div id="result-card" class="result-card hidden">
+              <div class="file-icon"><i class="fas fa-file-shield"></i></div>
+              <div class="file-details">
+                <strong id="out-filename">protected_document.pdf</strong><br />
+                <span id="out-size">0 KB</span>
+              </div>
+              <button id="save-btn" class="chalk-btn save-btn">
+                <i class="fas fa-download"></i> Download
+              </button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <script src="{{ url_for('static', filename='protecter.js') }}"></script>
+  </body>
+</html>

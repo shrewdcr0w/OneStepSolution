@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chalkboard QR Generator</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='extra.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+      #qrcode {
+        background: white; /* QR codes need a light background to be scanable */
+        padding: 15px;
+        border-radius: 8px;
+        display: inline-block;
+        margin-top: 20px;
+        border: 4px solid #fff;
+      }
+      #qrcode img {
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <main class="chalkboard">
+        <div class="board-header">
+          <h2>📱 Quick QR Generator</h2>
+          <a href="{{ url_for('index') }}" class="home-icon">🏠</a>
+        </div>
+
+        <div class="toolkit-grid">
+          <section class="panel">
+            <h3><i class="fas fa-edit"></i> Paste Text or URL</h3>
+            <textarea
+              id="qr-input"
+              placeholder="Paste link or text here..."
+              style="
+                width: 100%;
+                height: 150px;
+                background: rgba(0, 0, 0, 0.3);
+                color: white;
+                border: 1px solid #777;
+                padding: 10px;
+                border-radius: 8px;
+                font-family: 'Handlee', cursive;
+              "
+            ></textarea>
+
+            <button
+              id="gen-btn"
+              class="chalk-btn action-btn"
+              style="width: 100%; margin-top: 15px"
+            >
+              Generate QR Code
+            </button>
+          </section>
+
+          <section class="panel" style="text-align: center">
+            <h3><i class="fas fa-qrcode"></i> Your QR Code</h3>
+            <div id="output-placeholder" class="placeholder-text">
+              Scan will appear here...
+            </div>
+            <div id="qrcode" class="hidden"></div>
+            <br />
+            <button
+              id="download-qr"
+              class="chalk-btn save-btn hidden"
+              style="margin-top: 15px"
+            >
+              <i class="fas fa-download"></i> Save Image
+            </button>
+          </section>
+        </div>
+
+        <div class="panel" style="margin-top: 20px">
+          <h3><i class="fas fa-sticky-note"></i> Permanent Chalkboard Note</h3>
+          <textarea
+            id="permanent-note"
+            placeholder="Write something here... it stays even if you refresh!"
+            style="
+              width: 100%;
+              height: 100px;
+              background: none;
+              border: 1px dashed #fff;
+              color: white;
+              padding: 10px;
+            "
+          ></textarea>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const qrInput = document.getElementById("qr-input");
+      const genBtn = document.getElementById("gen-btn");
+      const qrContainer = document.getElementById("qrcode");
+      const placeholder = document.getElementById("output-placeholder");
+      const downloadBtn = document.getElementById("download-qr");
+      const noteArea = document.getElementById("permanent-note");
+
+      // --- QR GENERATION LOGIC ---
+      const qrcode = new QRCode(qrContainer, {
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+      });
+
+      genBtn.addEventListener("click", () => {
+        const text = qrInput.value.trim();
+        if (!text) {
+          alert("Please paste something first!");
+          return;
+        }
+
+        placeholder.classList.add("hidden");
+        qrContainer.classList.remove("hidden");
+        downloadBtn.classList.remove("hidden");
+
+        qrcode.clear();
+        qrcode.makeCode(text);
+      });
+
+      // --- DOWNLOAD LOGIC ---
+      downloadBtn.addEventListener("click", () => {
+        const img = qrContainer.querySelector("img");
+        const link = document.createElement("a");
+        link.href = img.src;
+        link.download = "chalkboard_qr.png";
+        link.click();
+      });
+
+      // Load saved note
+      if (localStorage.getItem("chalk_permanent_note")) {
+        noteArea.value = localStorage.getItem("chalk_permanent_note");
+      }
+
+      // Save note on every type
+      noteArea.addEventListener("input", () => {
+        localStorage.setItem("chalk_permanent_note", noteArea.value);
+      });
+    </script>
+  </body>
+</html>

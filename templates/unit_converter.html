@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chalkboard Unit Converter</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='extra.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      .converter-group {
+        margin-bottom: 25px;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+        padding-bottom: 15px;
+      }
+      .unit-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 10px;
+      }
+      .unit-input {
+        background: #222;
+        border: 1px solid #555;
+        color: #fff;
+        padding: 10px;
+        border-radius: 4px;
+        width: 40%;
+      }
+      .unit-label {
+        color: #ffeb3b;
+        font-weight: bold;
+        min-width: 60px;
+      }
+      .calc-result {
+        color: #4caf50;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <main class="chalkboard">
+        <div class="board-header">
+          <h2>📐 Engineering Unit Converter</h2>
+          <a href="{{ url_for('index') }}" class="home-icon">🏠</a>
+        </div>
+
+        <div class="toolkit-grid">
+          <section class="panel">
+            <h3><i class="fas fa-exchange-alt"></i> Fast Conversions</h3>
+
+            <div class="converter-group">
+              <p><i class="fas fa-ruler"></i> Length (Inch ↔ mm)</p>
+              <div class="unit-row">
+                <input
+                  type="number"
+                  id="inch-in"
+                  class="unit-input"
+                  placeholder="Inches"
+                  oninput="convertLength('in')"
+                />
+                <span class="unit-label">IN =</span>
+                <input
+                  type="number"
+                  id="mm-in"
+                  class="unit-input"
+                  placeholder="mm"
+                  oninput="convertLength('mm')"
+                />
+                <span class="unit-label">MM</span>
+              </div>
+            </div>
+
+            <div class="converter-group">
+              <p>
+                <i class="fas fa-compress-arrows-alt"></i> Pressure (PSI ↔ Bar)
+              </p>
+              <div class="unit-row">
+                <input
+                  type="number"
+                  id="psi-in"
+                  class="unit-input"
+                  placeholder="PSI"
+                  oninput="convertPressure('psi')"
+                />
+                <span class="unit-label">PSI =</span>
+                <input
+                  type="number"
+                  id="bar-in"
+                  class="unit-input"
+                  placeholder="Bar"
+                  oninput="convertPressure('bar')"
+                />
+                <span class="unit-label">BAR</span>
+              </div>
+            </div>
+
+            <div class="converter-group">
+              <p>
+                <i class="fas fa-thermometer-half"></i> Temperature (°C ↔ °F)
+              </p>
+              <div class="unit-row">
+                <input
+                  type="number"
+                  id="c-in"
+                  class="unit-input"
+                  placeholder="°C"
+                  oninput="convertTemp('c')"
+                />
+                <span class="unit-label">°C =</span>
+                <input
+                  type="number"
+                  id="f-in"
+                  class="unit-input"
+                  placeholder="°F"
+                  oninput="convertTemp('f')"
+                />
+                <span class="unit-label">°F</span>
+              </div>
+            </div>
+
+            <div class="converter-group">
+              <p><i class="fas fa-weight-hanging"></i> Weight (kg ↔ lbs)</p>
+              <div class="unit-row">
+                <input
+                  type="number"
+                  id="kg-in"
+                  class="unit-input"
+                  placeholder="kg"
+                  oninput="convertWeight('kg')"
+                />
+                <span class="unit-label">KG =</span>
+                <input
+                  type="number"
+                  id="lbs-in"
+                  class="unit-input"
+                  placeholder="lbs"
+                  oninput="convertWeight('lbs')"
+                />
+                <span class="unit-label">LBS</span>
+              </div>
+            </div>
+
+            <div class="converter-group">
+              <p><i class="fas fa-road"></i> Distance (km ↔ miles)</p>
+              <div class="unit-row">
+                <input
+                  type="number"
+                  id="km-in"
+                  class="unit-input"
+                  placeholder="km"
+                  oninput="convertDistance('km')"
+                />
+                <span class="unit-label">KM =</span>
+                <input
+                  type="number"
+                  id="mi-in"
+                  class="unit-input"
+                  placeholder="miles"
+                  oninput="convertDistance('mi')"
+                />
+                <span class="unit-label">MI</span>
+              </div>
+            </div>
+
+            <section class="panel">
+              <h3><i class="fas fa-database"></i> Storage Reality Check</h3>
+              <table
+                style="
+                  width: 100%;
+                  border-collapse: collapse;
+                  margin-top: 10px;
+                  color: #fff;
+                  font-size: 0.9rem;
+                  text-align: left;
+                "
+              >
+                <thead>
+                  <tr style="border-bottom: 2px solid #ffeb3b; color: #ffeb3b">
+                    <th style="padding: 10px">Label Size (Decimal)</th>
+                    <th style="padding: 10px">OS Sees (Binary)</th>
+                    <th style="padding: 10px">"Ghost" Loss</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1)">
+                    <td style="padding: 10px">500 GB</td>
+                    <td style="padding: 10px">~465 GiB</td>
+                    <td style="padding: 10px; color: #f44336">35 GB</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1)">
+                    <td style="padding: 10px">1 TB (1000 GB)</td>
+                    <td style="padding: 10px">~931 GiB</td>
+                    <td style="padding: 10px; color: #f44336">69 GB</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1)">
+                    <td style="padding: 10px">2 TB</td>
+                    <td style="padding: 10px">~1.81 TiB</td>
+                    <td style="padding: 10px; color: #f44336">182 GB</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px">4 TB</td>
+                    <td style="padding: 10px">~3.63 TiB</td>
+                    <td style="padding: 10px; color: #f44336">364 GB</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div
+                class="panel"
+                style="
+                  background: rgba(0, 0, 0, 0.2);
+                  border-top: 1px dashed #777;
+                  padding: 10px;
+                  margin-top: 15px;
+                "
+              >
+                <h4
+                  style="color: #ffeb3b; margin-bottom: 8px; font-size: 0.85rem"
+                >
+                  <i class="fas fa-info-circle"></i> IEC Standard Definitions
+                </h4>
+
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 8px;
+                    font-size: 0.75rem;
+                    color: #ccc;
+                  "
+                >
+                  <div style="border-right: 1px solid #444; padding-right: 8px">
+                    <p><strong>Binary Contractions:</strong></p>
+                    <ul style="list-style: none; padding: 0; margin: 5px 0">
+                      <li>
+                        <span style="color: #fff">Mebi</span> = Mega + Binary
+                      </li>
+                      <li>
+                        <span style="color: #fff">Gibi</span> = Giga + Binary
+                      </li>
+                      <li>
+                        <span style="color: #fff">Tebi</span> = Tera + Binary
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div style="padding-left: 8px">
+                    <p><strong>The Math:</strong></p>
+                    <ul style="list-style: none; padding: 0; margin: 5px 0">
+                      <li>
+                        <span style="color: #4caf50">MB</span> = 1,000<sup
+                          >2</sup
+                        >
+                        (Metric)
+                      </li>
+                      <li>
+                        <span style="color: #4caf50">MiB</span> = 1,024<sup
+                          >2</sup
+                        >
+                        (Binary)
+                      </li>
+                      <li>
+                        <span style="color: #4caf50">Ratio</span> = ~1.048x
+                        Difference
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <p
+                  style="
+                    font-size: 0.65rem;
+                    color: #888;
+                    margin-top: 8px;
+                    font-style: italic;
+                  "
+                >
+                  *Standardized by the IEC to resolve the 1000 vs 1024 byte
+                  conflict.
+                </p>
+              </div>
+            </section>
+          </section>
+
+          <section class="panel">
+            <h3><i class="fas fa-sticky-note"></i> Persistent Scratchpad</h3>
+            <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 10px">
+              Notes are saved automatically to this board.
+            </p>
+            <textarea
+              id="unit-scratchpad"
+              placeholder="Paste measurements or results here..."
+              style="
+                width: 100%;
+                height: 280px;
+                background: rgba(0, 0, 0, 0.2);
+                border: 2px dashed #fff;
+                color: #fff;
+                padding: 15px;
+                font-family: 'Handlee', cursive;
+              "
+            ></textarea>
+
+            <section class="panel cs-panel">
+              <h3><i class="fas fa-microchip"></i> Computer Science Zone</h3>
+
+              <div class="converter-group">
+                <p>🔢 Binary Powers (2^n)</p>
+                <div class="unit-row">
+                  <input
+                    type="number"
+                    id="power-n"
+                    class="unit-input"
+                    placeholder="n (e.g. 10)"
+                    oninput="calcPower(this.value)"
+                  />
+                  <span class="unit-label">2^n =</span>
+                  <input
+                    type="text"
+                    id="power-res"
+                    class="unit-input"
+                    readonly
+                    style="
+                      background: #111;
+                      color: #4caf50;
+                      border: 1px solid #444;
+                    "
+                  />
+                </div>
+              </div>
+
+              <div class="converter-group">
+                <p><i class="fas fa-network-wired"></i> Data (Mb ↔ MB)</p>
+                <div class="unit-row">
+                  <input
+                    type="number"
+                    id="mb-in"
+                    class="unit-input"
+                    placeholder="Mb"
+                    oninput="convertData('mb')"
+                  />
+                  <span class="unit-label">Mb =</span>
+                  <input
+                    type="number"
+                    id="MB-in"
+                    class="unit-input"
+                    placeholder="MB"
+                    oninput="convertData('MB')"
+                  />
+                  <span class="unit-label">MB</span>
+                </div>
+              </div>
+
+              <div
+                class="reference-box"
+                style="
+                  background: rgba(255, 255, 255, 0.05);
+                  padding: 10px;
+                  border-radius: 5px;
+                  font-size: 0.8rem;
+                "
+              >
+                <p style="color: #ffeb3b; margin-bottom: 5px">
+                  💾 CS Quick Refs:
+                </p>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    gap: 5px;
+                  "
+                >
+                  <span>1Byte</span> <span style="color: #fff">8 Bits</span>
+                  <span>Smallest addressable unit</span> <span>Int32 Max</span>
+                  <span style="color: #fff">2,147,483,647</span>
+                  <span>Max value for signed 32-bit int</span>
+                  <span>Port Limit</span>
+                  <span style="color: #fff">65,535</span>
+                  <span>Max TCP/UDP port number</span>
+                  <span>IPv4 Address</span>
+                  <span style="color: #fff">2^32</span>
+                  <span>Total possible IP addresses</span> <span>MTU</span>
+                  <span style="color: #fff">1500</span>
+                  <span>Standard Ethernet packet size</span>
+                  <span> KB and KiB</span>
+                  <span
+                    >KB (Kilobyte): Based on 10, used by storage manufacturers
+                    (Hard drives, USB sticks, 1KB = 1000 byte).
+                  </span>
+                  <span
+                    >KiB (Kibibyte): Based on 2, used by Operating Systems
+                    (Windows, Linux) and RAM, 1KiB = 1024 byte.
+                  </span>
+                </div>
+              </div>
+            </section>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      function calcPower(n) {
+        const resField = document.getElementById("power-res");
+        if (n === "" || isNaN(n)) {
+          resField.value = "";
+          return;
+        }
+        // Handle large numbers with BigInt
+        try {
+          if (n > 1024) {
+            resField.value = "Overflow";
+          } else {
+            const result = BigInt(2 ** parseInt(n));
+            resField.value = result.toLocaleString();
+          }
+        } catch (e) {
+          resField.value = "Error";
+        }
+      }
+
+      function convertData(type) {
+        const mb = document.getElementById("mb-in");
+        const MB = document.getElementById("MB-in");
+        if (type === "mb") {
+          MB.value = (mb.value / 8).toFixed(2);
+        } else {
+          mb.value = (MB.value * 8).toFixed(2);
+        }
+      }
+
+      // --- Conversion Logic ---
+      function convertLength(type) {
+        const inch = document.getElementById("inch-in");
+        const mm = document.getElementById("mm-in");
+        if (type === "in") mm.value = (inch.value * 25.4).toFixed(3);
+        else inch.value = (mm.value / 25.4).toFixed(3);
+      }
+
+      function convertPressure(type) {
+        const psi = document.getElementById("psi-in");
+        const bar = document.getElementById("bar-in");
+        if (type === "psi") bar.value = (psi.value * 0.0689476).toFixed(4);
+        else psi.value = (bar.value / 0.0689476).toFixed(4);
+      }
+
+      function convertTemp(type) {
+        const c = document.getElementById("c-in");
+        const f = document.getElementById("f-in");
+        if (type === "c") f.value = ((c.value * 9) / 5 + 32).toFixed(2);
+        else c.value = (((f.value - 32) * 5) / 9).toFixed(2);
+      }
+
+      function convertWeight(type) {
+        const kg = document.getElementById("kg-in");
+        const lbs = document.getElementById("lbs-in");
+        if (type === "kg") lbs.value = (kg.value * 2.20462).toFixed(2);
+        else kg.value = (lbs.value / 2.20462).toFixed(2);
+      }
+
+      function convertDistance(type) {
+        const km = document.getElementById("km-in");
+        const mi = document.getElementById("mi-in");
+        if (type === "km") mi.value = (km.value * 0.621371).toFixed(2);
+        else km.value = (mi.value / 0.621371).toFixed(2);
+      }
+
+      function convertVolume(type) {
+        const l = document.getElementById("liter-in");
+        const gal = document.getElementById("gal-in");
+        if (type === "l") gal.value = (l.value * 0.264172).toFixed(3);
+        else l.value = (gal.value / 0.264172).toFixed(3);
+      }
+
+      function convertHeight(type) {
+        const m = document.getElementById("m-in");
+        const ft = document.getElementById("ft-in");
+        if (type === "m") ft.value = (m.value * 3.28084).toFixed(2);
+        else m.value = (ft.value / 3.28084).toFixed(2);
+      }
+
+      // --- Permanent Note Logic ---
+      const pad = document.getElementById("unit-scratchpad");
+
+      // Load on start
+      window.onload = () => {
+        if (localStorage.getItem("unit_notes")) {
+          pad.value = localStorage.getItem("unit_notes");
+        }
+      };
+
+      // Save on type
+      pad.addEventListener("input", () => {
+        localStorage.setItem("unit_notes", pad.value);
+      });
+    </script>
+  </body>
+</html>

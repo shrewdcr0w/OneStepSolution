@@ -1,0 +1,8 @@
+pypdf
+PyPDF2
+pdfplumber
+fpdf
+python-docx
+Pillow
+msoffcrypto-tool
+Flask

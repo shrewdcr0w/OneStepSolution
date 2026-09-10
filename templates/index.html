@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chalkboard Organizer</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Segoe+UI:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main class="chalkboard">
+      <header class="board-header">
+        <h2>🛠️ Toolkit</h2>
+        <button id="add-note-btn" class="chalk-btn">+ Add Note</button>
+      </header>
+
+      <div class="workspace">
+        <section class="shelf-section">
+          <h2 class="section-title">Tool Shelf</h2>
+
+          <div class="shelf-wall">
+            <div class="shelf normal">
+              <span class="item">
+                <a href="/pdf" class="link">📄 PDF Converter</a>
+              </span>
+              <span class="item">
+                <a href="/pprotecter" class="link">🔒 Pass Protector</a>
+              </span>
+            </div>
+
+            <div class="shelf broken">
+              <span class="item">🚧 Under Construction</span>
+              <span class="crack"></span>
+            </div>
+
+            <div class="shelf normal">
+              <span
+                class="item"
+                style="text-decoration: line-through; opacity: 0.6"
+              >
+                🔳 QR Converter
+              </span>
+              <span class="item">
+                <a href="/qr_generator" class="link">▦ QR Generator</a>
+              </span>
+            </div>
+
+            <div class="shelf broken">
+              <span class="item">
+                <a href="/unit_converter" class="link">🔄 Unit Converter</a>
+              </span>
+              <span class="crack"></span>
+            </div>
+          </div>
+        </section>
+
+        <section class="tilted-wrap">
+          <div class="tilted-screen">
+            <h3>Sticky Wall</h3>
+            <p style="text-align: center; opacity: 0.7; margin-top: 10px">
+              (Drag notes here)
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <div id="notes-area"></div>
+    </main>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+  </body>
+</html>
